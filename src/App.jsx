@@ -8,17 +8,21 @@ class App extends React.Component {
     data: []
   };
 
-  loadData = async () => {
-    const [POSTS, USERS, COMMENTS] = await Promise.all([
-      getPosts(),
-      getUsers(),
-      getComments()
-    ]);
-    const DATA = this.groupeAllData(POSTS, USERS, COMMENTS);
+  loadData = event => {
+    event.target.innerText = "Loading...";
+    // Server response emulation
+    setTimeout(async () => {
+      const [POSTS, USERS, COMMENTS] = await Promise.all([
+        getPosts(),
+        getUsers(),
+        getComments()
+      ]);
+      const DATA = this.groupeAllData(POSTS, USERS, COMMENTS);
 
-    this.setState({
-      data: DATA
-    });
+      this.setState({
+        data: DATA
+      });
+    }, 350);
   };
 
   groupeAllData = (POSTS, USERS, COMMENTS) => {
@@ -34,13 +38,19 @@ class App extends React.Component {
     console.log(data);
     return (
       <div className="App">
-        {!data.length ? (
-          <button type="button" onClick={this.loadData}>
-            Press ME!
-          </button>
-        ) : (
-          <PostList data={data} />
-        )}
+        <div className="myFancyBlock">
+          {!data.length ? (
+            <button
+              type="button"
+              onClick={event => this.loadData(event)}
+              className="loadDataButton"
+            >
+              Press ME!
+            </button>
+          ) : (
+            <PostList data={data} />
+          )}
+        </div>
       </div>
     );
   }
