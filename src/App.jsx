@@ -1,5 +1,5 @@
 import React from "react";
-import "./App.css";
+import "./App.scss";
 import { getPosts, getUsers, getComments } from "./api/api";
 import PostList from "./components/PostList";
 

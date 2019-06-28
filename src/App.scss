@@ -41,6 +41,7 @@ body {
 }
 
 .post__title {
+  @extend %upperCase;
   font-size: 13px;
   grid-area: title;
 }
@@ -52,6 +53,7 @@ body {
 }
 
 .post__body {
+  @extend %upperCase;
   font-size: 13px;
   grid-area: body;
 }
@@ -95,25 +97,16 @@ body {
   grid-gap: 5px;
   padding: 15px 0;
   border-top: 1px solid rgba(189, 189, 189, 0.459);
-  grid-template-areas:
-    ""
-    ""
-    "";
   border-radius: 4px;
 }
 .comment__name,
 .comment__email {
+  @extend %upperCase;
   color: #2a5885;
 }
 
-.post__title:first-letter,
-.post__author-name:first-letter,
-.post__body:first-letter,
-.post__address:first-letter,
-.post__comment:first-letter,
-.comment__body::first-letter,
-.comment__name::first-letter {
-  text-transform: uppercase;
+.comment__body {
+  @extend %upperCase;
 }
 
 .loadPostsButton {
@@ -138,9 +131,9 @@ body {
   animation-iteration-count: infinite;
 }
 
-/* .loadPostsButton:focus {
+.loadPostsButton:focus {
   outline: none;
-} */
+}
 
 .error {
   background-color: rgb(255, 65, 65);
@@ -166,4 +159,12 @@ body {
   to {
     transform: rotate(-1deg);
   }
+}
+
+%firstLetterUpperCase {
+  background-color: rgb(255, 65, 65);
+}
+
+%upperCase::first-letter {
+  text-transform: uppercase;
 }
