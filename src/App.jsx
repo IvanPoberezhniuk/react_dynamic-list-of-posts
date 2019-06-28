@@ -5,50 +5,64 @@ import PostList from "./components/PostList";
 
 class App extends React.Component {
   state = {
-    data: []
+    posts: [],
+    isLoaded: false,
+    buttonInnerText: "Press Me!",
+    buttonStyle: ""
   };
 
-  loadData = event => {
-    event.target.innerText = "Loading...";
-    // Server response emulation
-    setTimeout(async () => {
-      const [POSTS, USERS, COMMENTS] = await Promise.all([
+  loadPosts = async event => {
+    event.target.blur();
+
+    this.setState({
+      buttonInnerText: "Loading..."
+    });
+
+    try {
+      let [posts, users, cooments] = await Promise.all([
         getPosts(),
         getUsers(),
         getComments()
       ]);
-      const DATA = this.groupeAllData(POSTS, USERS, COMMENTS);
+
+      let response = this.groupeAllData(posts, users, cooments);
 
       this.setState({
-        data: DATA
+        posts: response,
+        isLoaded: true
       });
-    }, 350);
+    } catch (err) {
+      this.setState({
+        buttonStyle: "error",
+        buttonInnerText: `${err.message}`
+      });
+    }
   };
 
-  groupeAllData = (POSTS, USERS, COMMENTS) => {
-    return POSTS.map(post => ({
+  groupeAllData = (posts, users, comments) => {
+    return posts.map(post => ({
       ...post,
-      user: USERS.find(user => post.userId === user.id),
-      comments: COMMENTS.filter(comment => comment.postId === post.id)
+      user: users.find(user => post.userId === user.id),
+      comments: comments.filter(comment => comment.postId === post.id)
     }));
   };
 
   render() {
-    const { data } = this.state;
-    console.log(data);
+    const { posts, isLoaded, buttonStyle } = this.state;
+
     return (
       <div className="App">
         <div className="myFancyBlock">
-          {!data.length ? (
+          {isLoaded ? (
+            <PostList posts={posts} />
+          ) : (
             <button
               type="button"
-              onClick={event => this.loadData(event)}
-              className="loadDataButton"
+              onClick={event => this.loadPosts(event)}
+              className={`loadPostsButton ` + buttonStyle}
             >
-              Press ME!
+              {this.state.buttonInnerText}
             </button>
-          ) : (
-            <PostList data={data} />
           )}
         </div>
       </div>

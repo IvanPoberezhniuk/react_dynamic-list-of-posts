@@ -1,17 +1,16 @@
+const URL = "https://jsonplaceholder.typicode.com";
+
 export const getPosts = () => {
-  return fetch("https://jsonplaceholder.typicode.com/posts").then(res =>
-    res.json()
-  );
+  return fetch(`${URL}/posts`)
+  .then(res => res.json());
 };
 
 export const getUsers = () => {
-  return fetch("https://jsonplaceholder.typicode.com/users").then(res =>
-    res.json()
-  );
+  return fetch(`${URL}/users`)
+  .then(res => res.json());
 };
 
 export const getComments = () => {
-  return fetch("https://jsonplaceholder.typicode.com/comments").then(res =>
-    res.json()
-  );
+  return fetch(`${URL}/comments`)
+  .then(res => res.json());
 };

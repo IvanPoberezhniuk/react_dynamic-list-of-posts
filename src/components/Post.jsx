@@ -5,7 +5,7 @@ const Post = props => {
   const { post } = props;
 
   return (
-    <>
+    <section className="post" key={post.id}>
       <span className="post__title">{post.title}</span>
       <span className="post__author-name">
         <a href="#/">{post.user.name}</a>
@@ -20,10 +20,8 @@ const Post = props => {
           {post.user.address.suite}
         </a>
       </span>
-      <section className="post__comments">
-        <CommentList comments={post.comments} />
-      </section>
-    </>
+      <CommentList comments={post.comments} />
+    </section>
   );
 };
 

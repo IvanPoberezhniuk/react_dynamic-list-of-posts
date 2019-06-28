@@ -3,14 +3,12 @@ import Post from "./Post";
 
 class PostList extends Component {
   render() {
-    const { data } = this.props;
+    const { posts } = this.props;
 
     return (
       <div className="postList">
-        {data.map(post => (
-          <section key={post.id} className="post">
-            <Post post={post} />
-          </section>
+        {posts.map(post => (
+          <Post post={post} />
         ))}
       </div>
     );
