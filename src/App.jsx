@@ -2,33 +2,33 @@ import React from "react";
 import "./App.scss";
 import { getPosts, getUsers, getComments } from "./api/api";
 import PostList from "./components/PostList";
+import SearchField from "./components/SearchField";
 
 class App extends React.Component {
   state = {
     posts: [],
     isLoaded: false,
+    buttonStatus: false,
     buttonInnerText: "Press Me!",
-    buttonStyle: ""
+    buttonStyle: "",
+    searchFieldValue: ""
   };
 
   loadPosts = async event => {
-    event.target.blur();
-
     this.setState({
-      buttonInnerText: "Loading..."
+      buttonInnerText: "Loading...",
+      buttonStatus: true
     });
 
     try {
-      let [posts, users, cooments] = await Promise.all([
+      const [posts, users, cooments] = await Promise.all([
         getPosts(),
         getUsers(),
         getComments()
       ]);
 
-      let response = this.groupeAllData(posts, users, cooments);
-
       this.setState({
-        posts: response,
+        posts: this.groupAllData(posts, users, cooments),
         isLoaded: true
       });
     } catch (err) {
@@ -39,7 +39,7 @@ class App extends React.Component {
     }
   };
 
-  groupeAllData = (posts, users, comments) => {
+  groupAllData = (posts, users, comments) => {
     return posts.map(post => ({
       ...post,
       user: users.find(user => post.userId === user.id),
@@ -47,19 +47,58 @@ class App extends React.Component {
     }));
   };
 
+  postToRneder = event => {
+    const searchFieldValue = this.state.searchFieldValue.toLowerCase();
+
+    if (/^ *$/.test(searchFieldValue)) {
+      return;
+    } else {
+      return this.state.posts.filter(
+        post =>
+          post.title
+            .replace(/(\r\n|\n|\r)/gm, " ")
+            .includes(searchFieldValue) ||
+          post.body
+            .replace(/(\r\n|\n|\r)/gm, " ")
+            .includes(searchFieldValue)
+      );
+    }
+  };
+
+  updateSerachFieldValue = event => {
+    this.setState({
+      searchFieldValue: event.target.value
+    });
+  };
+
   render() {
-    const { posts, isLoaded, buttonStyle } = this.state;
+    const {
+      posts,
+      isLoaded,
+      buttonStyle,
+      buttonStatus,
+      searchFieldValue
+    } = this.state;
+
+    let postsToRender = this.postToRneder() || posts;
 
     return (
       <div className="App">
         <div className="myFancyBlock">
           {isLoaded ? (
-            <PostList posts={posts} />
+            <>
+              <SearchField
+                searchFieldValue={searchFieldValue}
+                updateSerachFieldValue={this.updateSerachFieldValue}
+              />
+              <PostList posts={postsToRender} />
+            </>
           ) : (
             <button
               type="button"
-              onClick={event => this.loadPosts(event)}
+              onClick={this.loadPosts}
               className={`loadPostsButton ` + buttonStyle}
+              disabled={buttonStatus}
             >
               {this.state.buttonInnerText}
             </button>

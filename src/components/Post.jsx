@@ -5,7 +5,7 @@ const Post = props => {
   const { post } = props;
 
   return (
-    <section className="post" key={post.id}>
+    <section className="post">
       <span className="post__title">{post.title}</span>
       <span className="post__author-name">
         <a href="#/">{post.user.name}</a>

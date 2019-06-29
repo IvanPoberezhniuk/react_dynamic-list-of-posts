@@ -2,7 +2,7 @@ import React from "react";
 
 const Comments = ({ comment }) => {
   return (
-    <section key={comment.id} className="post__comment">
+    <section className="post__comment">
       <span className="comment__name">
         <a href="#/">{comment.name}</a>
       </span>

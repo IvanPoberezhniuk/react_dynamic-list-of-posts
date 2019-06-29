@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Post from "./Post";
 
+
 class PostList extends Component {
   render() {
     const { posts } = this.props;
@@ -8,7 +9,7 @@ class PostList extends Component {
     return (
       <div className="postList">
         {posts.map(post => (
-          <Post post={post} />
+          <Post post={post} key={post.id} />
         ))}
       </div>
     );
