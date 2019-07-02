@@ -7,6 +7,10 @@ a:hover {
   text-decoration: underline;
 }
 
+html {
+  overflow-y: scroll;
+}
+
 body {
   background-color: rgb(237, 238, 240);
 }
@@ -16,11 +20,12 @@ body {
   height: 30px;
   border-radius: 4px;
   padding: 0 15px;
-  max-width: 510px;
+  max-width: 540px;
   border: 1px solid rgb(209, 209, 209);
 }
 
 .myFancyBlock {
+  padding-top: 15px;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -148,6 +153,13 @@ body {
 
 .error {
   background-color: rgb(255, 65, 65);
+}
+
+.error__message {
+  color: rgb(255, 65, 65);
+  padding: 5px;
+  max-width: 40%;
+  font-weight: bolder;
 }
 
 @keyframes awesomeAnimation {

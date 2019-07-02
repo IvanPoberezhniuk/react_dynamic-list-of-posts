@@ -3,40 +3,44 @@ import "./App.scss";
 import { getPosts, getUsers, getComments } from "./api/api";
 import PostList from "./components/PostList";
 import SearchField from "./components/SearchField";
+import Button from "./components/Button";
 
 class App extends React.Component {
   state = {
     posts: [],
     isLoaded: false,
     buttonStatus: false,
-    buttonInnerText: "Press Me!",
-    buttonStyle: "",
-    searchFieldValue: ""
+    searchFieldValue: "",
+    errorText: ""
   };
 
-  loadPosts = async event => {
+  loadPosts = () => {
     this.setState({
-      buttonInnerText: "Loading...",
-      buttonStatus: true
+      buttonStatus: true,
+      errorText: ""
     });
 
-    try {
-      const [posts, users, cooments] = await Promise.all([
-        getPosts(),
-        getUsers(),
-        getComments()
-      ]);
+    // Bad internet connection simulation
+    setTimeout(async () => {
+      try {
+        const [posts, users, cooments] = await Promise.all([
+          getPosts(),
+          getUsers(),
+          getComments()
+        ]);
 
-      this.setState({
-        posts: this.groupAllData(posts, users, cooments),
-        isLoaded: true
-      });
-    } catch (err) {
-      this.setState({
-        buttonStyle: "error",
-        buttonInnerText: `${err.message}`
-      });
-    }
+        this.setState({
+          posts: this.groupAllData(posts, users, cooments),
+          isLoaded: true
+        });
+      } catch (err) {
+        this.setState({
+          isLoaded: false,
+          buttonStatus: false,
+          errorText: err.message
+        });
+      }
+    }, 1333);
   };
 
   groupAllData = (posts, users, comments) => {
@@ -47,22 +51,18 @@ class App extends React.Component {
     }));
   };
 
-  postToRneder = event => {
-    const searchFieldValue = this.state.searchFieldValue.toLowerCase();
+  postToRender = event => {
+    const searchFieldValue = this.state.searchFieldValue.trim().toLowerCase();
 
-    if (/^ *$/.test(searchFieldValue)) {
+    if (!searchFieldValue.trim()) {
       return;
-    } else {
-      return this.state.posts.filter(
-        post =>
-          post.title
-            .replace(/(\r\n|\n|\r)/gm, " ")
-            .includes(searchFieldValue) ||
-          post.body
-            .replace(/(\r\n|\n|\r)/gm, " ")
-            .includes(searchFieldValue)
-      );
     }
+
+    return this.state.posts.filter(
+      post =>
+        post.title.trim().includes(searchFieldValue) ||
+        post.body.trim().includes(searchFieldValue)
+    );
   };
 
   updateSerachFieldValue = event => {
@@ -75,12 +75,12 @@ class App extends React.Component {
     const {
       posts,
       isLoaded,
-      buttonStyle,
+      errorText,
       buttonStatus,
       searchFieldValue
     } = this.state;
 
-    let postsToRender = this.postToRneder() || posts;
+    let postsToRender = this.postToRender() || posts;
 
     return (
       <div className="App">
@@ -94,14 +94,14 @@ class App extends React.Component {
               <PostList posts={postsToRender} />
             </>
           ) : (
-            <button
-              type="button"
-              onClick={this.loadPosts}
-              className={`loadPostsButton ` + buttonStyle}
-              disabled={buttonStatus}
-            >
-              {this.state.buttonInnerText}
-            </button>
+            <>
+              <Button
+                errorText={errorText}
+                loadPosts={this.loadPosts}
+                buttonStatus={buttonStatus}
+              />
+              <div className="error__message">{errorText}</div>
+            </>
           )}
         </div>
       </div>
