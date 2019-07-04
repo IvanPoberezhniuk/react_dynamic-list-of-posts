@@ -8,6 +8,7 @@ import Button from './components/Button';
 class App extends Component {
   state = {
     posts: [],
+    postsToRender: [],
     isLoaded: false,
     buttonStatus: false,
     searchFieldValue: '',
@@ -27,8 +28,11 @@ class App extends Component {
         getComments()
       ]);
 
+      const groupedData = this.groupAllData(posts, users, cooments);
+
       this.setState({
-        posts: this.groupAllData(posts, users, cooments),
+        posts: groupedData,
+        postsToRender: groupedData,
         isLoaded: true
       });
     } catch (err) {
@@ -48,39 +52,38 @@ class App extends Component {
     }));
   };
 
-  postToRender = event => {
-    const searchFieldValue = this.state.searchFieldValue
+  filterPosts = event => {
+    const searchFieldValue = event.target.value
       .toLowerCase()
       .replace(/(\s)/gm, '');
 
-    if (!searchFieldValue.trim()) {
+    if (!searchFieldValue) {
       return;
     }
 
-    return this.state.posts.filter(post =>
-      (post.title + post.body)
-        .replace(/(\s)/gm, '')
-        .toLowerCase()
-        .includes(searchFieldValue)
-    );
-  };
+    this.setState(prevState => {
+      const postsToRender = prevState.posts.filter(post =>
+        (post.title + post.body)
+          .replace(/(\s)/gm, '')
+          .toLowerCase()
+          .includes(searchFieldValue)
+      );
 
-  updateSerachFieldValue = event => {
-    this.setState({
-      searchFieldValue: event.target.value
+      return {
+        searchFieldValue: searchFieldValue,
+        postsToRender: postsToRender || prevState.post
+      };
     });
   };
 
   render() {
     const {
-      posts,
       isLoaded,
       errorText,
       buttonStatus,
-      searchFieldValue
+      searchFieldValue,
+      postsToRender
     } = this.state;
-
-    let postsToRender = this.postToRender() || posts;
 
     return (
       <div className="App">
@@ -89,7 +92,7 @@ class App extends Component {
             <>
               <SearchField
                 searchFieldValue={searchFieldValue}
-                updateSerachFieldValue={this.updateSerachFieldValue}
+                filterPosts={this.filterPosts}
               />
               <PostList posts={postsToRender} />
             </>
