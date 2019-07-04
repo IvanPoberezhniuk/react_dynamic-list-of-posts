@@ -1,4 +1,4 @@
-const URL = "https://jsonplaceholder.typicode.com";
+const URL = 'https://jsonplaceholder.typicode.com';
 
 export const getPosts = () => {
   return fetch(`${URL}/posts`).then(res => res.json());

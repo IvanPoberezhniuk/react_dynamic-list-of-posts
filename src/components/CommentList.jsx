@@ -1,5 +1,5 @@
-import React from "react";
-import Comment from "./Comment";
+import React from 'react';
+import Comment from './Comment';
 
 const CommentList = props => {
   const { comments } = props;

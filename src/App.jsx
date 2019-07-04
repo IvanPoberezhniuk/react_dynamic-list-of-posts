@@ -1,46 +1,43 @@
-import React from "react";
-import "./App.scss";
-import { getPosts, getUsers, getComments } from "./api/api";
-import PostList from "./components/PostList";
-import SearchField from "./components/SearchField";
-import Button from "./components/Button";
+import React, { Component } from 'react';
+import './App.scss';
+import { getPosts, getUsers, getComments } from './api/api';
+import PostList from './components/PostList';
+import SearchField from './components/SearchField';
+import Button from './components/Button';
 
-class App extends React.Component {
+class App extends Component {
   state = {
     posts: [],
     isLoaded: false,
     buttonStatus: false,
-    searchFieldValue: "",
-    errorText: ""
+    searchFieldValue: '',
+    errorText: ''
   };
 
-  loadPosts = () => {
+  loadPosts = async () => {
     this.setState({
       buttonStatus: true,
-      errorText: ""
+      errorText: ''
     });
 
-    // Bad internet connection simulation
-    setTimeout(async () => {
-      try {
-        const [posts, users, cooments] = await Promise.all([
-          getPosts(),
-          getUsers(),
-          getComments()
-        ]);
+    try {
+      const [posts, users, cooments] = await Promise.all([
+        getPosts(),
+        getUsers(),
+        getComments()
+      ]);
 
-        this.setState({
-          posts: this.groupAllData(posts, users, cooments),
-          isLoaded: true
-        });
-      } catch (err) {
-        this.setState({
-          isLoaded: false,
-          buttonStatus: false,
-          errorText: err.message
-        });
-      }
-    }, 1333);
+      this.setState({
+        posts: this.groupAllData(posts, users, cooments),
+        isLoaded: true
+      });
+    } catch (err) {
+      this.setState({
+        isLoaded: false,
+        buttonStatus: false,
+        errorText: err.message
+      });
+    }
   };
 
   groupAllData = (posts, users, comments) => {
@@ -52,16 +49,19 @@ class App extends React.Component {
   };
 
   postToRender = event => {
-    const searchFieldValue = this.state.searchFieldValue.trim().toLowerCase();
+    const searchFieldValue = this.state.searchFieldValue
+      .toLowerCase()
+      .replace(/(\s)/gm, '');
 
     if (!searchFieldValue.trim()) {
       return;
     }
 
-    return this.state.posts.filter(
-      post =>
-        post.title.trim().includes(searchFieldValue) ||
-        post.body.trim().includes(searchFieldValue)
+    return this.state.posts.filter(post =>
+      (post.title + post.body)
+        .replace(/(\s)/gm, '')
+        .toLowerCase()
+        .includes(searchFieldValue)
     );
   };
 

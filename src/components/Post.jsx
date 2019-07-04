@@ -1,5 +1,5 @@
-import React from "react";
-import CommentList from "./CommentList";
+import React from 'react';
+import CommentList from './CommentList';
 
 const Post = props => {
   const { post } = props;
@@ -16,7 +16,7 @@ const Post = props => {
       </span>
       <span className="post__address">
         <a href="#/">
-          {post.user.address.city} {post.user.address.street}{" "}
+          {post.user.address.city} {post.user.address.street}{' '}
           {post.user.address.suite}
         </a>
       </span>
