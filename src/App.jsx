@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { debounce } from 'lodash';
 import './App.scss';
 import { getPosts, getUsers, getComments } from './api/api';
 import PostList from './components/PostList';
@@ -52,28 +53,35 @@ class App extends Component {
     }));
   };
 
-  filterPosts = event => {
+  filterPosts = debounce(event => {
     const searchFieldValue = event.target.value
       .toLowerCase()
       .replace(/(\s)/gm, '');
 
     if (!searchFieldValue) {
-      return;
+      this.setState(prevState => ({
+        postsToRender: prevState.posts
+      }));
+    } else {
+      this.setState(prevState => {
+        const postsToRender = prevState.posts.filter(post =>
+          (post.title + post.body)
+            .replace(/(\s)/gm, '')
+            .toLowerCase()
+            .includes(searchFieldValue)
+        );
+
+        return {
+          searchFieldValue: searchFieldValue,
+          postsToRender: postsToRender || prevState.posts
+        };
+      });
     }
+  }, 333);
 
-    this.setState(prevState => {
-      const postsToRender = prevState.posts.filter(post =>
-        (post.title + post.body)
-          .replace(/(\s)/gm, '')
-          .toLowerCase()
-          .includes(searchFieldValue)
-      );
-
-      return {
-        searchFieldValue: searchFieldValue,
-        postsToRender: postsToRender || prevState.post
-      };
-    });
+  debouncedFilterPosts = event => {
+    event.persist();
+    this.filterPosts(event);
   };
 
   render() {
@@ -92,7 +100,7 @@ class App extends Component {
             <>
               <SearchField
                 searchFieldValue={searchFieldValue}
-                filterPosts={this.filterPosts}
+                filterPosts={this.debouncedFilterPosts}
               />
               <PostList posts={postsToRender} />
             </>
