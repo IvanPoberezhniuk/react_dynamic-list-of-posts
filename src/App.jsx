@@ -23,13 +23,13 @@ class App extends Component {
     });
 
     try {
-      const [posts, users, cooments] = await Promise.all([
+      const [posts, users, comments] = await Promise.all([
         getPosts(),
         getUsers(),
         getComments()
       ]);
 
-      const groupedData = this.groupAllData(posts, users, cooments);
+      const groupedData = this.groupAllData(posts, users, comments);
 
       this.setState({
         posts: groupedData,
