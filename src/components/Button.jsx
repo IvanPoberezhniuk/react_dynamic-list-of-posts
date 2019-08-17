@@ -1,10 +1,10 @@
 import React from 'react';
 
-const Button = ({ loadPosts, buttonStatus, errorText }) => {
+const Button = ({ fetchPosts, isLoading, error }) => {
   const innerText = () => {
-    if (!buttonStatus && !errorText) {
+    if (!isLoading && !error) {
       return 'Press Me';
-    } else if (errorText) {
+    } else if (error) {
       return 'Try Again';
     } else {
       return 'Loading...';
@@ -14,9 +14,9 @@ const Button = ({ loadPosts, buttonStatus, errorText }) => {
   return (
     <button
       type="button"
-      onClick={loadPosts}
-      className={`loadPostsButton ${errorText ? 'error' : ''}`}
-      disabled={buttonStatus}
+      onClick={fetchPosts}
+      className={error ? 'loadPostsButton error' : 'loadPostsButton'}
+      disabled={isLoading}
     >
       {innerText()}
     </button>

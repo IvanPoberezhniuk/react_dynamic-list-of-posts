@@ -1,12 +1,12 @@
 import React from 'react';
 
-const SearchField = ({ filterPosts }) => {
+const SearchField = ({ debouncedChangeSearchFieldValue }) => {
   return (
     <input
       type="search"
       className="searchField"
       placeholder="Search by title and text..."
-      onChange={filterPosts}
+      onChange={debouncedChangeSearchFieldValue}
       autoComplete="off"
     />
   );

@@ -1,123 +1,90 @@
-import React, { Component } from 'react';
+import React, { useState, useMemo } from 'react';
 import { debounce } from 'lodash';
 import './App.scss';
-import { getPosts, getUsers, getComments } from './api/api';
+import { connect } from 'react-redux';
+import { fetchPosts } from './actions/postsActions';
+
 import PostList from './components/PostList';
 import SearchField from './components/SearchField';
 import Button from './components/Button';
 
-class App extends Component {
-  state = {
-    posts: [],
-    postsToRender: [],
-    isLoaded: false,
-    buttonStatus: false,
-    searchFieldValue: '',
-    errorText: ''
-  };
+const App = ({ posts, isLoaded, isLoading, error, fetchPosts }) => {
+  const [searchFieldValue, setSearchFieldValue] = useState('');
 
-  loadPosts = async () => {
-    this.setState({
-      buttonStatus: true,
-      errorText: ''
-    });
-
-    try {
-      const [posts, users, comments] = await Promise.all([
-        getPosts(),
-        getUsers(),
-        getComments()
-      ]);
-
-      const groupedData = this.groupAllData(posts, users, comments);
-
-      this.setState({
-        posts: groupedData,
-        postsToRender: groupedData,
-        isLoaded: true
-      });
-    } catch (err) {
-      this.setState({
-        isLoaded: false,
-        buttonStatus: false,
-        errorText: err.message
-      });
+  const filterPosts = (posts, searchFieldValue) => {
+    console.log('filtePOstst');
+    if (!searchFieldValue) {
+      return posts;
+    } else {
+      return posts.filter(post =>
+        (post.title + post.body)
+          .replace(/(\s)/gm, '')
+          .toLowerCase()
+          .includes(searchFieldValue)
+      );
     }
   };
 
-  groupAllData = (posts, users, comments) => {
-    return posts.map(post => ({
-      ...post,
-      user: users.find(user => post.userId === user.id),
-      comments: comments.filter(comment => comment.postId === post.id)
-    }));
-  };
+  const changeSearchFieldValue = debounce(event => {
+    const value = event.target.value.toLowerCase().replace(/(\s)/gm, '');
 
-  filterPosts = debounce(event => {
-    const searchFieldValue = event.target.value
-      .toLowerCase()
-      .replace(/(\s)/gm, '');
-
-    if (!searchFieldValue) {
-      this.setState(prevState => ({
-        postsToRender: prevState.posts
-      }));
+    if (!value) {
+      return setSearchFieldValue('');
     } else {
-      this.setState(prevState => {
-        const postsToRender = prevState.posts.filter(post =>
-          (post.title + post.body)
-            .replace(/(\s)/gm, '')
-            .toLowerCase()
-            .includes(searchFieldValue)
-        );
-
-        return {
-          searchFieldValue: searchFieldValue,
-          postsToRender: postsToRender || prevState.posts
-        };
-      });
+      console.log('changed SearchFieldValue');
+      setSearchFieldValue(value);
     }
   }, 333);
 
-  debouncedFilterPosts = event => {
+  const debouncedChangeSearchFieldValue = event => {
     event.persist();
-    this.filterPosts(event);
+    changeSearchFieldValue(event);
   };
 
-  render() {
-    const {
-      isLoaded,
-      errorText,
-      buttonStatus,
-      searchFieldValue,
-      postsToRender
-    } = this.state;
+  let postsToRender = useMemo(() => filterPosts(posts, searchFieldValue), [
+    posts,
+    searchFieldValue
+  ]);
 
-    return (
-      <div className="App">
-        <div className="myFancyBlock">
-          {isLoaded ? (
-            <>
-              <SearchField
-                searchFieldValue={searchFieldValue}
-                filterPosts={this.debouncedFilterPosts}
-              />
-              <PostList posts={postsToRender} />
-            </>
-          ) : (
-            <>
-              <Button
-                errorText={errorText}
-                loadPosts={this.loadPosts}
-                buttonStatus={buttonStatus}
-              />
-              <div className="error__message">{errorText}</div>
-            </>
-          )}
-        </div>
+  return (
+    <div className="App">
+      {console.log(posts)}
+      <div className="myFancyBlock">
+        {isLoaded ? (
+          <>
+            <SearchField
+              searchFieldValue={searchFieldValue}
+              debouncedChangeSearchFieldValue={debouncedChangeSearchFieldValue}
+            />
+            <PostList posts={postsToRender} />
+          </>
+        ) : (
+          <>
+            <Button
+              error={error}
+              fetchPosts={fetchPosts}
+              isLoading={isLoading}
+            />
+            <div className="error__message">{error}</div>
+          </>
+        )}
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
-export default App;
+const mapStateToProps = state => ({
+  posts: state.postsReducer.posts,
+  isLoaded: state.postsReducer.isLoaded,
+  isLoading: state.postsReducer.isLoading,
+  error: state.postsReducer.isLoading
+});
+
+const mapDispatchToProps = dispatch => ({
+  fetchPosts: () => dispatch(fetchPosts())
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);

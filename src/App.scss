@@ -1,10 +1,10 @@
 a {
   color: #2a5885;
   text-decoration: none;
-}
 
-a:hover {
-  text-decoration: underline;
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 html {
@@ -46,83 +46,125 @@ body {
   grid-gap: 5px;
   padding: 15px;
   grid-template-areas:
-    'author-name . email'
+    'author-name . remove'
+    'email . .'
     'title title title '
     'body body body '
     'address address .'
     'comments comments comments';
   grid-template-columns: 150px 200px 150px;
-  grid-template-rows: repeat(5, auto);
+  grid-template-rows: auto;
+
+  &__remove {
+    color: #2a5885;
+    grid-area: remove;
+    justify-self: end;
+    align-self: baseline;
+
+    &:hover {
+      cursor: pointer;
+      color: red;
+      text-decoration: underline;
+    }
+  }
+
+  &__title {
+    @extend %upperCase;
+    font-size: 13px;
+    grid-area: title;
+  }
+  
+  &__author-name {
+    color: #2a5885;
+    font-weight: bolder;
+    grid-area: author-name;
+  }
+
+  &__body {
+    @extend %upperCase;
+    font-size: 13px;
+    grid-area: body;
+    white-space: pre-line;
+  }
+
+  &__email {
+    color: #2a5885;
+    font-weight: 500;
+    font-size: 14px;
+    grid-area: email;
+    justify-self: start;
+    align-self: baseline;
+  }
+
+  &__address {
+    padding-left: 13px;
+    font-size: 13px;
+    grid-area: address;
+  }
+
+  &__address::before {
+    position: relative;
+    left: -15px;
+    top: 15px;
+    display: block;
+    content: '';
+    height: 13px;
+    width: 13px;
+    background: url('imgs/location_ico.svg') no-repeat center;
+    background-size: cover;
+  }
+
+  &__comments {
+    margin-top: 30px;
+    display: grid;
+    font-size: 13px;
+    grid-area: comments;
+    grid-gap: 5px;
+  }
+
+
+    
 }
 
-.post__title {
-  @extend %upperCase;
-  font-size: 13px;
-  grid-area: title;
-}
-
-.post__author-name {
-  color: #2a5885;
-  font-weight: bolder;
-  grid-area: author-name;
-}
-
-.post__body {
-  @extend %upperCase;
-  font-size: 13px;
-  grid-area: body;
-  white-space: pre-line;
-}
-
-.post__email {
-  color: #2a5885;
-  font-weight: bolder;
-  font-size: 14px;
-  grid-area: email;
-  justify-self: flex-end;
-}
-
-.post__address {
-  padding-left: 13px;
-  font-size: 13px;
-  grid-area: address;
-}
-
-.post__address::before {
-  position: relative;
-  left: -15px;
-  top: 15px;
-  display: block;
-  content: '';
-  height: 13px;
-  width: 13px;
-  background: url('imgs/location_ico.svg') no-repeat center;
-  background-size: cover;
-}
-
-.post__comments {
-  margin-top: 30px;
-  display: grid;
-  font-size: 13px;
-  grid-area: comments;
-  grid-gap: 5px;
-}
-
-.post__comment {
+.comment {
   display: grid;
   grid-gap: 5px;
   padding: 15px 0;
   border-top: 1px solid rgba(189, 189, 189, 0.459);
   border-radius: 4px;
-}
-.comment__name,
-.comment__email {
-  @extend %upperCase;
-  color: #2a5885;
-}
+  grid-template-areas: 
+  'name . remove'
+  'email . .'
+  'text text text';
+  
+  &__name,
+  &__email {
+    grid-area: email;
+    @extend %upperCase;
+    color: #2a5885;
+  }
 
-.comment__body {
-  @extend %upperCase;
+  &__name {
+    grid-area: name;
+    font-weight: 500;
+  }
+
+  &__remove {
+    grid-area: remove;
+    color: #2a5885;
+   
+
+    &:hover {
+      color: red;
+      cursor: pointer;
+    }
+  }
+
+  &__text {
+    grid-area: text;
+
+    @extend %upperCase;
+  }
 }
 
 .loadPostsButton {
@@ -136,30 +178,30 @@ body {
   border-radius: 3px;
   background-color: rgb(102, 167, 247);
   transition-duration: 0.1s;
-}
 
-.loadPostsButton:hover {
-  cursor: pointer;
-  opacity: 0.8;
-  transition-duration: 0.1s;
-  animation-name: awesomeAnimation;
-  animation-duration: 1s;
-  animation-iteration-count: infinite;
-}
+  &:hover {
+    cursor: pointer;
+    opacity: 0.8;
+    transition-duration: 0.1s;
+    animation-name: awesomeAnimation;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+  }
 
-.loadPostsButton:focus {
-  outline: none;
+  &:focus {
+    outline: none;
+  }
+
 }
 
 .error {
   background-color: rgb(255, 65, 65);
-}
-
-.error__message {
-  color: rgb(255, 65, 65);
-  padding: 5px;
-  max-width: 40%;
-  font-weight: bolder;
+  &__message {
+    color: rgb(255, 65, 65);
+    padding: 5px;
+    max-width: 40%;
+    font-weight: bolder;
+  }
 }
 
 @keyframes awesomeAnimation {

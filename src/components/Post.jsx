@@ -1,14 +1,17 @@
 import React from 'react';
-import CommentList from './CommentList';
+import CommentsList from './CommentsList';
+import { connect } from 'react-redux';
+import { removePost, removeComment } from '../actions/postsActions';
 
-const Post = props => {
-  const { post } = props;
-
+const Post = ({ post, removePost, removeComment }) => {
   return (
     <section className="post">
       <span className="post__title">{post.title}</span>
       <span className="post__author-name">
         <a href="#/">{post.user.name}</a>
+      </span>
+      <span className="post__remove" onClick={() => removePost(post.id)}>
+        Remove
       </span>
       <span className="post__body">{post.body}</span>
       <span className="post__email">
@@ -20,9 +23,22 @@ const Post = props => {
           {post.user.address.suite}
         </a>
       </span>
-      <CommentList comments={post.comments} />
+      <CommentsList
+        comments={post.comments}
+        removeComment={removeComment}
+        postId={post.id}
+      />
     </section>
   );
 };
 
-export default Post;
+const mapDispatchToProps = dispatch => ({
+  removePost: id => dispatch(removePost(id)),
+  removeComment: (postId, commentId) =>
+    dispatch(removeComment(postId, commentId))
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(Post);
