@@ -1,2 +1,2 @@
-- [Preview](https://mag1ckdrak0n.github.io/react_dynamic-list-of-posts/)
-- [Pull Request](https://github.com/mag1ckdrak0n/react_dynamic-list-of-posts/pull/1/files)
+- [Preview](https://ivanpoberezhniuk.github.io/react_dynamic-list-of-posts/)
+- [Pull Request](https://github.com/IvanPoberezhniuk/react_dynamic-list-of-posts/pull/2)
