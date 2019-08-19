@@ -21,13 +21,20 @@ const postsReducer = (state = initialState, action) => {
       const posts = state.posts.filter(post => post.id !== action.id);
       return { ...state, posts };
     case POSTS.REMOVE_COMMENT:
-      const postId = state.posts.findIndex(post => post.id === action.postId);
-      const newState = { ...state };
-      newState.posts[postId].comments = newState.posts[postId].comments.filter(
-        comment => comment.id !== action.commentId
-      );
+      const newState = state.posts.map(post => {
+        if (post.id === action.postId) {
+          return {
+            ...post,
+            comments: post.comments.filter(
+              comment => comment.id !== action.commentId
+            )
+          };
+        } else {
+          return post;
+        }
+      });
 
-      return newState;
+      return { ...state, posts: newState };
     default:
       return state;
   }

@@ -1,9 +1,7 @@
 import React from 'react';
 import Post from './Post';
 
-const PostList = props => {
-  const { posts } = props;
-
+const PostList = ({ posts }) => {
   return (
     <div className="postList">
       {posts.map(post => (

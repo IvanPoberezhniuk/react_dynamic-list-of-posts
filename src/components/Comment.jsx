@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Comments = ({ comment, postId, removeComment }) => {
+const Comment = ({ comment, postId, removeComment }) => {
   return (
     <section className="comment">
       <span className="comment__name">
@@ -22,4 +22,4 @@ const Comments = ({ comment, postId, removeComment }) => {
   );
 };
 
-export default Comments;
+export default Comment;

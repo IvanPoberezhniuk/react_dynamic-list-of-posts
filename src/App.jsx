@@ -12,7 +12,6 @@ const App = ({ posts, isLoaded, isLoading, error, fetchPosts }) => {
   const [searchFieldValue, setSearchFieldValue] = useState('');
 
   const filterPosts = (posts, searchFieldValue) => {
-    console.log('filtePOstst');
     if (!searchFieldValue) {
       return posts;
     } else {
@@ -31,7 +30,6 @@ const App = ({ posts, isLoaded, isLoading, error, fetchPosts }) => {
     if (!value) {
       return setSearchFieldValue('');
     } else {
-      console.log('changed SearchFieldValue');
       setSearchFieldValue(value);
     }
   }, 333);
@@ -48,7 +46,6 @@ const App = ({ posts, isLoaded, isLoading, error, fetchPosts }) => {
 
   return (
     <div className="App">
-      {console.log(posts)}
       <div className="myFancyBlock">
         {isLoaded ? (
           <>

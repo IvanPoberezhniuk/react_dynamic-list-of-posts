@@ -1,9 +1,8 @@
 import React from 'react';
 import Comment from './Comment';
+import { connect } from 'react-redux';
 
-const CommentsList = props => {
-  const { comments, postId, removeComment } = props;
-
+const CommentsList = ({ comments, postId, removeComment }) => {
   return (
     <section className="post__comments">
       {comments.map(comment => (
@@ -18,4 +17,11 @@ const CommentsList = props => {
   );
 };
 
-export default CommentsList;
+const mapStateToProps = state => ({
+  posts: state.postsReducer.posts
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(CommentsList);
